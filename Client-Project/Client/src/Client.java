@@ -48,5 +48,19 @@ public class Client {
 
         str = bf.readLine();
         System.out.println("server : " + str);
+        
+        while(str.equals(NONE)){
+
+        }
+        if(str.equals(NONE)){
+            pw.println(QUIT);
+            pw.flush();
+            str = bf.readLine();
+            System.out.println("server : " + str);
+            if(str.equals(QUIT)){
+                s.close();
+            }
+        }
+        
     }
 }
