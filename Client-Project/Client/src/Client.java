@@ -13,6 +13,7 @@ public class Client {
     private static String OK = "OK";
     private static String SCHD = "SCHD";
     private static String QUIT = "QUIT";
+    private static final String dot = ".";
 
     public static void main(String[] args) throws IOException, SocketException{
         
@@ -27,6 +28,7 @@ public class Client {
 
         String userName = userInput.nextLine();
         String userCmd = "";
+        ArrayList<String> SLI = new ArrayList<>();
         pw.println((HELO));
         pw.flush();
         
@@ -50,6 +52,29 @@ public class Client {
         System.out.println("server : " + str);
         
         while(str.equals(NONE)){
+            String reply = "";
+            String[] SLIHold;
+            if (userCmd.equals("Get Server Information")) {
+                pw.println(GETS);
+                pw.flush();
+                reply = bf.readLine();
+                System.out.println("server outer : " + reply);
+                while (!reply.equals(dot)) {
+                    pw.println(OK);
+                    pw.flush();
+                    reply = bf.readLine();
+                    System.out.println("server inner: " + reply);
+                    if (!reply.equals(dot)) {
+                        SLI.add(reply);
+                        System.out.println(SLI);
+                    }
+
+                }
+               
+
+                userCmd = "FINISHED";
+
+            }
 
         }
         if(str.equals(NONE)){
