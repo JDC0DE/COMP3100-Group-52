@@ -13,6 +13,8 @@ public class Client {
     private static String OK = "OK";
     private static String SCHD = "SCHD";
     private static String QUIT = "QUIT";
+    private static String JOBN = "JOBN";
+    private static String JCPL = "JCPL";
     private static final String dot = ".";
     private static int biggestCS = 0;
     private static int biggestSID = 0;
@@ -118,8 +120,73 @@ public class Client {
 
         str = bf.readLine();
         System.out.println("server : " + str);
+
+        getLargestServer(s, pw, bf);
         
         while(str.equals(NONE)){
+            System.out.println(" I am here" + str);
+            // pw.println(OK);
+            // pw.flush();
+            // str = bf.readLine();
+            // userCmd = "Get Server Information";
+            // userInput.nextLine();
+
+           // String reply = "";
+           // String[] SLIHold;
+            // if (userCmd.equals("Get Server Information")) {
+
+            //     userCmd = "FINISHED";
+
+            // }
+//            if (userCmd.equals("FINISHED")) {
+                
+                
+                    System.out.println(" I am here IF DOT");
+                    
+                    
+                    // pw.println(REDY);
+                    // pw.flush();
+                    // str = bf.readLine();
+                    while(str.equals(dot) || str.equals("")){
+                        str = bf.readLine();
+                        System.out.println("please work " + str);
+                    }
+                    if(str.contains(JCPL)){
+                        pw.println(REDY);
+                        pw.flush();
+                        str = bf.readLine();
+                        System.out.println("server: " + str);
+                    }
+                    if(str.equals(NONE)){
+                        break;
+                    }
+                    if(str.equals(OK)){
+                        //str = bf.readLine();
+                        pw.println(REDY);
+                        pw.flush();
+                        str = bf.readLine();
+                    }
+                    if(str.contains(JOBN)){
+                        
+                    System.out.println("after dot: " + str);
+                    String[] hold = str.split("\\s+");
+
+                    
+
+                    System.out.println("sched: " + hold[1]);
+                    // Thread.sleep(9000);
+                    int jbId = Integer.parseInt(hold[2]);
+
+                    pw.println(SCHD + " " + jbId + " " + biggestST + " " + biggestSID);
+                    // pw.println(GETS);
+                    pw.flush();
+                    str = bf.readLine();
+                    System.out.println("server : " + str);
+                   // pw.println(OK);
+                    //pw.flush();
+                    //str = bf.readLine();
+                    System.out.println("server : " + str);
+                    }
           
 
         }
@@ -134,4 +201,4 @@ public class Client {
         }
         
     }
-}
+    }
