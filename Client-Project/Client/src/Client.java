@@ -5,6 +5,7 @@ import java.util.Scanner;
 import java.io.*;
 
 public class Client {
+    // global variables initialised for sending messages according to user guide
     private static String HELO = "HELO";
     private static String AUTH = "AUTH";
     private static String REDY = "REDY";
@@ -16,12 +17,22 @@ public class Client {
     private static String JOBN = "JOBN";
     private static String JCPL = "JCPL";
     private static final String dot = ".";
+
+    // global variables initialised for holding important shceduling data
     private static int biggestCS = 0;
     private static int biggestSID = 0;
-    private static int counter = 0;
     private static String biggestST = "";
 
+    private static int counter = 0;
+    
+    // global variable to hold messages sent from server
+    private static String str = "";
 
+    // this method is responsible for taking the ArrayList parameter looping through
+    // it and splitting each String of the list into an array so that the indexes of
+    // that array can be assigned to the attributes of the ServerInfo object.
+    // the object is added to a seperate ArrayList where the allToLargest is checked
+    // on the coreCount of each ServerInfo object
     public static void createServerInfo(ArrayList<String> SLI) {
         String[] SLIHold;
         String res = null;
@@ -53,6 +64,8 @@ public class Client {
 
     }
 
+     // this function is responsible for sending the GETS All message to get all
+    // server information and add it into an ArrayList
     public static void getLargestServer(Socket s, PrintWriter pw, BufferedReader bf) {
         String reply = "";
         ArrayList<String> SLI = new ArrayList<>();
@@ -85,6 +98,42 @@ public class Client {
         //return reply;
     }
 
+
+    // intial handshake between client-server where client is authenticated before
+    // proceeding to job scheduling
+    public static void handShake(PrintWriter pw, BufferedReader bf) {
+        String userName = System.getProperty("user.name");
+
+        try {
+            pw.println((HELO));
+            pw.flush();
+            str = bf.readLine();
+            System.out.println("server : " + str);
+
+            pw.println(AUTH + " " + userName);
+            pw.flush();
+
+            str = bf.readLine();
+            System.out.println("server : " + str);
+
+            pw.println(REDY);
+            pw.flush();
+
+            str = bf.readLine();
+            System.out.println("server : " + str);
+        } catch (IOException e) {
+            System.out.println("Error: handshake invalid");
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+    // function which initialises the socket so that a connection can be established
+    // with client/server and messages can be sent between.
+    // Calls core functions of stage 1 like the handshake as well contains main loop
+    // for listening for jobs or other messages
     public static void main(String[] args) throws IOException, SocketException{
         
         Socket s = new Socket("127.0.0.1", 50000);
