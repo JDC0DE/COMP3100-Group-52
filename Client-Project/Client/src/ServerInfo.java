@@ -1,11 +1,11 @@
-public class ServerInfo {
+public class ServerInfo { //SeverInfo class intended for holding server information 
     String type;
     int id;
     int coreCount;
     int memory;
     int disk;
 
-    public ServerInfo(){
+    public ServerInfo(){ //ServerInfo Constructor
         type = "";
         id =0; 
         coreCount = 0;
