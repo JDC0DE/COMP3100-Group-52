@@ -1,7 +1,5 @@
 import java.net.*;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 import java.io.*;
 
 public class Client {
@@ -229,6 +227,7 @@ public class Client {
                 pw.println(REDY);
                 pw.flush();
                 str = bf.readLine();
+                System.out.println("server : " + str);
             }
         } catch (IOException e) {
             System.out.println("Error: nextJob invalid");
