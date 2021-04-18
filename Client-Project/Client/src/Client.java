@@ -28,6 +28,9 @@ public class Client {
     // global variable to hold messages sent from server
     private static String str = "";
 
+
+    
+
     // this method is responsible for taking the ArrayList parameter looping through
     // it and splitting each String of the list into an array so that the indexes of
     // that array can be assigned to the attributes of the ServerInfo object.
@@ -123,6 +126,44 @@ public class Client {
             System.out.println("server : " + str);
         } catch (IOException e) {
             System.out.println("Error: handshake invalid");
+            e.printStackTrace();
+        }
+
+    }
+
+    // JCPL messages will be sent to client which highlight the status of the jobs
+    // that have been scheduled and need a REDY reponse from the client
+    public static void jobStatus(PrintWriter pw, BufferedReader bf) {
+        try {
+            if (str.contains(JCPL)) {
+                pw.println(REDY);
+                pw.flush();
+                str = bf.readLine();
+                System.out.println("server : " + str);
+            }
+        } catch (IOException e) {
+            System.out.println("Error: jobStatus invalid");
+            e.printStackTrace();
+        }
+    }
+
+
+    // the scheduling of jobs by splitting the JOBN string and taking the job ID to
+    // use in the schedule message along with biggestST and biggestSID
+    public static void schedJob(PrintWriter pw, BufferedReader bf) {
+        try {
+            if (str.contains(JOBN)) {
+
+                String[] hold = str.split("\\s+");
+                int jbId = Integer.parseInt(hold[2]);
+
+                pw.println(SCHD + " " + jbId + " " + biggestST + " " + biggestSID);
+                pw.flush();
+                str = bf.readLine();
+                System.out.println("server : " + str);
+            }
+        } catch (IOException e) {
+            System.out.println("Error: schedJob invalid");
             e.printStackTrace();
         }
 
