@@ -8,7 +8,7 @@ public class Client {
     private static String AUTH = "AUTH";
     private static String REDY = "REDY";
     private static String NONE = "NONE";
-    private static String GETS = "GETS All";
+    private static String GETS = "GETS Capable";
     private static String OK = "OK";
     private static String SCHD = "SCHD";
     private static String QUIT = "QUIT";
@@ -23,6 +23,13 @@ public class Client {
 
     // global variable to hold messages sent from server
     private static String str = "";
+
+    private static String[] hold;
+    private static int jbId = 0;
+    private static int core = 0;
+    private static int memory = 0;
+    private static int disk = 0;
+
 
     public static void main(String[] args) throws IOException, SocketException {
         run();
@@ -48,9 +55,9 @@ public class Client {
 
             jobStatus(pw, bf);
 
-            nextJob(pw, bf);
+            nextJob(s, pw, bf);
 
-            schedJob(pw, bf);
+            schedJob(s, pw, bf);
 
             if (str.equals(NONE)) {
                 break;
@@ -82,13 +89,13 @@ public class Client {
         biggestCS = serverHold.get(0).coreCount;
         biggestSID = serverHold.get(0).id;
         biggestST = serverHold.get(0).type;
-        for (int i = 0; i < serverHold.size(); i++) {
-            if (serverHold.get(i).coreCount > biggestCS) {
-                biggestCS = serverHold.get(i).coreCount;
-                biggestSID = serverHold.get(i).id;
-                biggestST = serverHold.get(i).type;
-            }
-        }
+        // for (int i = 0; i < serverHold.size(); i++) {
+        //     if (serverHold.get(i).coreCount > biggestCS) {
+        //         biggestCS = serverHold.get(i).coreCount;
+        //         biggestSID = serverHold.get(i).id;
+        //         biggestST = serverHold.get(i).type;
+        //     }
+        // }
 
     }
 
@@ -98,7 +105,7 @@ public class Client {
         String reply = "";
         ArrayList<String> SLI = new ArrayList<>();
         try {
-            pw.println(GETS);
+            pw.println(GETS + " " + core + " " + memory + " " + disk);
             pw.flush();
             reply = bf.readLine();
             System.out.println("server outer : " + reply);
@@ -157,6 +164,11 @@ public class Client {
 
             str = bf.readLine();
             System.out.println("server : " + str);
+
+            hold = str.split("\\s+");
+            core = Integer.parseInt(hold[4]);
+            memory = Integer.parseInt(hold[5]);
+            disk = Integer.parseInt(hold[6]);
         } catch (IOException e) {
             System.out.println("Error: handshake invalid");
             e.printStackTrace();
@@ -182,12 +194,16 @@ public class Client {
 
     // the scheduling of jobs by splitting the JOBN string and taking the job ID to
     // use in the schedule message along with biggestST and biggestSID
-    public static void schedJob(PrintWriter pw, BufferedReader bf) {
+    public static void schedJob(Socket s, PrintWriter pw, BufferedReader bf) {
         try {
             if (str.contains(JOBN)) {
 
-                String[] hold = str.split("\\s+");
-                int jbId = Integer.parseInt(hold[2]);
+                 hold = str.split("\\s+");
+                 jbId = Integer.parseInt(hold[2]);
+                //  core = Integer.parseInt(hold[4]);
+                //  memory = Integer.parseInt(hold[5]);
+                //  disk = Integer.parseInt(hold[6]);
+                //  getLargestServer(s, pw, bf);
 
                 pw.println(SCHD + " " + jbId + " " + biggestST + " " + biggestSID);
                 pw.flush();
@@ -221,13 +237,22 @@ public class Client {
     }
 
     // gets the next job from the server
-    public static void nextJob(PrintWriter pw, BufferedReader bf) {
+    public static void nextJob(Socket s, PrintWriter pw, BufferedReader bf) {
         try {
             if (str.equals(OK)) {
                 pw.println(REDY);
                 pw.flush();
                 str = bf.readLine();
                 System.out.println("server : " + str);
+
+                if(str.contains(JOBN)){
+                hold = str.split("\\s+");
+                jbId = Integer.parseInt(hold[2]);
+                core = Integer.parseInt(hold[4]);
+                memory = Integer.parseInt(hold[5]);
+                disk = Integer.parseInt(hold[6]);
+                getLargestServer(s, pw, bf);
+                }
             }
         } catch (IOException e) {
             System.out.println("Error: nextJob invalid");
