@@ -25,6 +25,7 @@ public class Client {
     private static String str = "";
 
     private static String[] hold;
+    private static int dataLength = 0;
     private static int jbId = 0;
     private static int core = 0;
     private static int memory = 0;
@@ -109,17 +110,36 @@ public class Client {
             pw.flush();
             reply = bf.readLine();
             System.out.println("server outer : " + reply);
-            while (!reply.equals(dot)) {
-                pw.println(OK);
-                pw.flush();
+            hold = reply.split("\\s+");
+            dataLength = Integer.parseInt(hold[1]);
+            pw.println(OK);
+            pw.flush();
+            for(int i = 0; i < dataLength; i++){
                 reply = bf.readLine();
                 System.out.println("server inner: " + reply);
-                if (!reply.equals(dot)) {
-                    SLI.add(reply);
-                    System.out.println(SLI);
-
-                }
+                    if (!reply.equals(dot)) {
+                        SLI.add(reply);
+                        System.out.println(SLI);
+    
+                    }
+                    else{
+                        break;
+                    }
             }
+            // while (!reply.equals(dot)) {
+            //     //pw.println(OK);
+            //     //pw.flush();
+            //     reply = bf.readLine();
+            //     System.out.println("server inner: " + reply);
+            //     if (!reply.equals(dot)) {
+            //         SLI.add(reply);
+            //         System.out.println(SLI);
+
+            //     }
+            // }
+          
+            pw.println(OK);
+            pw.flush();
 
             createServerInfo(SLI);
         } catch (Exception e) {
@@ -134,6 +154,7 @@ public class Client {
         try {
             while (str.equals(dot) || str.equals("")) {
                 str = bf.readLine();
+                System.out.println("rLCatchUp : " + str);
             }
         } catch (IOException e) {
             System.out.println("Error: readLineCatchUp invalid");
@@ -184,7 +205,7 @@ public class Client {
                 pw.println(REDY);
                 pw.flush();
                 str = bf.readLine();
-                System.out.println("server : " + str);
+                System.out.println("server JCPL : " + str);
             }
         } catch (IOException e) {
             System.out.println("Error: jobStatus invalid");
@@ -208,7 +229,7 @@ public class Client {
                 pw.println(SCHD + " " + jbId + " " + biggestST + " " + biggestSID);
                 pw.flush();
                 str = bf.readLine();
-                System.out.println("server : " + str);
+                System.out.println("server JOBN : " + str);
             }
         } catch (IOException e) {
             System.out.println("Error: schedJob invalid");
@@ -243,7 +264,7 @@ public class Client {
                 pw.println(REDY);
                 pw.flush();
                 str = bf.readLine();
-                System.out.println("server : " + str);
+                System.out.println("server nextJob : " + str);
 
                 if(str.contains(JOBN)){
                 hold = str.split("\\s+");
